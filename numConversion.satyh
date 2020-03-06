@@ -1,0 +1,368 @@
+@require: base/list-ext
+
+
+
+module NumConversion : sig
+
+
+  val to-zenkaku : int -> string
+  val from-zenkaku : string -> int
+
+  val to-roman-upper : int -> string
+  val from-roman-upper : string -> int
+
+  val to-roman-lower : int -> string
+  val from-roman-lower : string -> int
+
+  val to-kansujix : int -> string
+  val from-kansujix : string -> int
+
+end = struct
+
+% 0 : 48
+% 1 : 49
+% 2 : 50
+% 3 : 51
+% 4 : 52
+% 5 : 53
+% 6 : 54
+% 7 : 55
+% 8 : 56
+% 9 : 57
+
+let panic = abort-with-message
+
+
+let lst-to-int n-lst =
+  let-rec sub lst n m =
+    match lst with
+    | [] -> m
+    | x :: xs -> sub xs (n*10) ((n * x) + m)
+  in
+    sub (List.reverse n-lst) 1 0
+
+let to-zenkaku n =
+  let str-n = arabic n in
+  let str-list = string-explode str-n in
+  let f n = n + 65248 in
+  let zenkaku-list = List.map f str-list in
+    string-unexplode zenkaku-list
+
+
+let from-zenkaku s =
+  let zenkaku-list = string-explode s in
+  let f n =
+    if 65296 > n || 65305 < n then
+      panic (`from-zenkaku : `# ^ string-unexplode [n] ^ #` is not zenakku-suji`)
+    else
+      n - 65296
+  in
+  let n-list = List.map f zenkaku-list in
+    n-list |> lst-to-int
+
+
+type roman =
+  | M
+  | CM
+  | D
+  | CD
+  | C
+  | XC
+  | L
+  | XL
+  | X
+  | IX
+  | VIII
+  | VII
+  | VI
+  | V
+  | IV
+  | III
+  | II
+  | I
+
+let roman-to-int r =
+  match r with
+  | M -> 1000
+  | CM -> 900
+  | D -> 500
+  | CD -> 400
+  | C -> 100
+  | XC -> 90
+  | L -> 50
+  | XL -> 40
+  | X -> 10
+  | IX -> 9
+  | VIII -> 8
+  | VII -> 7
+  | VI -> 6
+  | V -> 5
+  | IV -> 4
+  | III -> 3
+  | II -> 2
+  | I -> 1
+
+let roman-to-string-upper r =
+  match r with
+  | M    -> `M`
+  | CM   -> `CM`
+  | D    -> `D`
+  | CD   -> `CD`
+  | C    -> `C`
+  | XC   -> `XC`
+  | L    -> `L`
+  | XL   -> `XL`
+  | X    -> `X`
+  | IX   -> `IX`
+  | VIII -> `VIII`
+  | VII  -> `VII`
+  | VI   -> `VI`
+  | V    -> `V`
+  | IV   -> `IV`
+  | III  -> `III`
+  | II   -> `II`
+  | I    -> `I`
+
+
+let roman-to-string-lower r =
+  match r with
+  | M    -> `m`
+  | CM   -> `cm`
+  | D    -> `d`
+  | CD   -> `cd`
+  | C    -> `c`
+  | XC   -> `xc`
+  | L    -> `l`
+  | XL   -> `xl`
+  | X    -> `x`
+  | IX   -> `ix`
+  | VIII -> `viii`
+  | VII  -> `vii`
+  | VI   -> `vi`
+  | V    -> `v`
+  | IV   -> `iv`
+  | III  -> `iii`
+  | II   -> `ii`
+  | I    -> `i`
+
+
+let int-to-roman n =
+  match n with
+  | 1000 -> M
+  | 900  -> CM
+  | 500  -> D
+  | 400  -> CD
+  | 100  -> C
+  | 90   -> XC
+  | 50   -> L
+  | 40   -> XL
+  | 10   -> X
+  | 9    -> IX
+  | 8    -> VIII
+  | 7    -> VII
+  | 6    -> VI
+  | 5    -> V
+  | 4    -> IV
+  | 3    -> III
+  | 2    -> II
+  | 1    -> I
+  | _ -> panic ` `
+
+
+let string-to-roman-upper s =
+  match s with
+  | `M`    -> M
+  | `CM`   -> CM
+  | `D`    -> D
+  | `CD`   -> CD
+  | `C `   -> C
+  | `XC`   -> XC
+  | `L`    -> L
+  | `XL`   -> XL
+  | `X`    -> X
+  | `IX`   -> IX
+  | `VIII` -> VIII
+  | `VII`  -> VII
+  | `VI`   -> VI
+  | `V`    -> V
+  | `IV`   -> IV
+  | `III`  -> III
+  | `II`   -> II
+  | `I`    -> I
+  | _ -> panic (s ^ #` is not roman-upper`)
+
+
+let string-to-roman-lower s =
+  match s with
+  | `m`    -> M
+  | `cm`   -> CM
+  | `d`    -> D
+  | `cd`   -> CD
+  | `c `   -> C
+  | `xc`   -> XC
+  | `l`    -> L
+  | `xl`   -> XL
+  | `x`    -> X
+  | `ix`   -> IX
+  | `viii` -> VIII
+  | `vii`  -> VII
+  | `vi`   -> VI
+  | `v`    -> V
+  | `iv`   -> IV
+  | `iii`  -> III
+  | `ii`   -> II
+  | `i`    -> I
+  | _ -> panic (s ^ #` is not roman-lower`)
+
+
+let roman-n-lst = [1000;900;500;400;100;90;50;40;10;9;8;7;6;5;4;3;2;1]
+
+let get-divide-num n =
+  let-rec sub lst n =
+    match lst with
+    | [] -> 0
+    | x :: [] -> x
+    | x :: y :: xs ->
+      if y > n then
+        sub (y::xs) n
+      else
+        if x > n && n > y then
+          y
+        else
+          x
+  in
+    sub roman-n-lst n
+
+let is-roman n = List.exists ((==) n) roman-n-lst
+
+let roman-int-tuple-to-string f (n,m) =
+  let get-str m =
+    if m == 0 then
+      ` `
+    else
+      f m
+  in
+  let-rec sub n s =
+    if n <= 0 then
+      ` `
+    else
+      sub (n - 1) s ^ s
+  in
+    get-str m |> sub n
+
+
+let make-to-roman f n =
+  if is-roman n then
+    f n
+  else
+    let-rec sub n lst =
+      let num-of-divide = get-divide-num n in
+      let quot = n / num-of-divide in
+      let rem = n mod num-of-divide in
+      if is-roman n || n == 0 then
+        (1,n) ::lst
+      else
+        sub rem ((quot,num-of-divide) :: lst)
+    in
+    let roman-lst = sub n [] in
+    roman-lst
+      |> List.reverse
+      |> List.map (roman-int-tuple-to-string f)
+      |> List.fold-left (^) ` `
+
+
+let to-roman-upper n =
+  let f n = n |> int-to-roman |> roman-to-string-upper in
+  make-to-roman f n
+
+
+let to-roman-lower n =
+  let f n = n |> int-to-roman |> roman-to-string-lower in
+  make-to-roman f n
+
+
+let roman-to-str-lst lst str =
+  let if-s str = List.exists (string-same str) lst in
+  let len = string-length str - 1 in
+  let-rec sub n =
+    if n > len then
+      []
+    else
+      if n == len then
+        string-sub str n 1 :: []
+      else
+        let s1 = string-sub str n 1 in
+        let s2 = string-sub str (n + 1) 1 in
+        if if-s (s1^s2) then
+          (s1 ^ s2) :: sub (n + 2)
+        else
+          s1 :: sub (n + 1)
+  in
+    sub 0
+
+let make-from-roman f lst s =
+  let s-lst = roman-to-str-lst lst s in
+    s-lst |> List.map f |> List.fold-left (+) 0
+
+
+let from-roman-upper s =
+  let f s = s |> string-to-roman-upper |> roman-to-int in
+  make-from-roman f [`CM`;`CD`;`XC`;`XL`;`IX`;`IV`] s
+
+let from-roman-lower s =
+  let f s = s |> string-to-roman-lower |> roman-to-int in
+  make-from-roman f [`cm`;`cd`;`xc`;`xl`;`ix`;`iv`] s
+
+
+let uni-point-to-kansujix n =
+  match n with
+  | 48 -> `〇`
+  | 49 -> `一`
+  | 50 -> `二`
+  | 51 -> `三`
+  | 52 -> `四`
+  | 53 -> `五`
+  | 54 -> `六`
+  | 55 -> `七`
+  | 56 -> `八`
+  | 57 -> `九`
+  | _ -> panic (`to-kansujix : `# ^ string-unexplode [n] ^ #` is not "int"`)
+
+let to-kansujix n =
+  n
+  |> arabic
+  |> string-explode
+  |> List.map uni-point-to-kansujix
+  |> List.fold-left (^) ` `
+
+
+let kansujix-point-to-int n =
+  match n with
+  | 12295 -> 0
+  | 19968 -> 1
+  | 20108 -> 2
+  | 19977 -> 3
+  | 22235 -> 4
+  | 20116 -> 5
+  | 20845 -> 6
+  | 19971 -> 7
+  | 20843 -> 8
+  | 20061 -> 9
+  | _ -> panic (`from-kansujix : `# ^ string-unexplode [n] ^ #` is not "kansuji"`)
+
+
+let from-kansujix s =
+  let-rec f n lst =
+    match lst with
+    | [] -> []
+    | x :: xs -> (n * x) :: (f (n * 10) xs)
+  in
+  s
+  |> string-explode
+  |> List.map kansujix-point-to-int
+  |> List.reverse
+  |> f 1
+  |> List.fold-left (+) 0
+
+
+end
