@@ -1,5 +1,5 @@
 @require: stdjabook
-@import: num-conversion
+@import: ../num-conversion
 %@import: con-ms
 
 
