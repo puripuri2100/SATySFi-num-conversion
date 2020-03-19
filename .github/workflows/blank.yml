@@ -1,0 +1,23 @@
+name: build
+
+on: [push,pull_request]
+
+
+jobs:
+  build-simple-example:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [0.0.4]
+    container:
+      image: amutake/satysfi:${{ matrix.version }}
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          export HOME=/root
+          eval $(opam env)
+          opam update
+          opam install satysfi-base
+          satyrographos install -library base
+          satysfi test.saty
+        working-directory: ./test

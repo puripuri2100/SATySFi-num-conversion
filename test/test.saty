@@ -1,0 +1,63 @@
+@require: stdjabook
+@import: num-conversion
+%@import: con-ms
+
+
+open NumConversion
+
+let show-option t =
+  match t with
+  | None -> `None`
+  | Some(s) -> `Some(` ^ s ^ `)`
+
+let opiton-panic t =
+  match t with
+  | None -> abort-with-message ` `
+  | Some(t) -> t
+
+in
+
+document (|
+  title = {変換テスト};
+  author = {\@puripuri2100};
+  show-title = false;
+  show-toc = false;
+|) '<
+  +p(1230 |> to-zenkaku |> show-option |> embed-string);
+  +p(`１２３０` |> from-zenkaku |> opiton-panic |> arabic |> embed-string);
+  +p(100 |> to-roman-upper |> show-option |> embed-string);
+  +p(9 |> to-roman-upper |> show-option |> embed-string);
+  +p(123 |> to-roman-upper |> show-option |> embed-string);
+  +p(1235 |> to-roman-upper |> show-option |> embed-string);
+  +p(3999 |> to-roman-upper |> show-option |> embed-string);
+  +p(100 |> to-roman-lower |> show-option |> embed-string);
+  +p(9 |> to-roman-lower |> show-option |> embed-string);
+  +p(123 |> to-roman-lower |> show-option |> embed-string);
+  +p(1235 |> to-roman-lower |> show-option |> embed-string);
+  +p(3999 |> to-roman-lower |> show-option |> embed-string);
+
+  +p(100 |> to-roman-upper |> opiton-panic |> from-roman-upper |> opiton-panic |> arabic |> embed-string);
+  +p(9 |> to-roman-upper |> opiton-panic |> from-roman-upper |> opiton-panic |> arabic |> embed-string);
+  +p(123 |> to-roman-upper |> opiton-panic |> from-roman-upper |> opiton-panic |> arabic |> embed-string);
+  +p(1235 |> to-roman-upper |> opiton-panic |> from-roman-upper |> opiton-panic |> arabic |> embed-string);
+  +p(3999 |> to-roman-upper |> opiton-panic |> from-roman-upper |> opiton-panic |> arabic |> embed-string);
+  +p(100 |> to-roman-lower |> opiton-panic |> from-roman-lower |> opiton-panic |> arabic |> embed-string);
+  +p(9 |> to-roman-lower |> opiton-panic |> from-roman-lower |> opiton-panic |> arabic |> embed-string);
+  +p(123 |> to-roman-lower |> opiton-panic |> from-roman-lower |> opiton-panic |> arabic |> embed-string);
+  +p(1235 |> to-roman-lower |> opiton-panic |> from-roman-lower |> opiton-panic |> arabic |> embed-string);
+  +p(3999 |> to-roman-lower |> opiton-panic |> from-roman-lower |> opiton-panic |> arabic |> embed-string);
+  +p(499 |> to-roman-lower |> opiton-panic |> from-roman-lower |> opiton-panic |> arabic |> embed-string);
+
+  +p(100 |> to-kansujix |> show-option |> embed-string);
+  +p(9 |> to-kansujix |> show-option |> embed-string);
+  +p(123 |> to-kansujix |> show-option |> embed-string);
+  +p(1235 |> to-kansujix |> show-option |> embed-string);
+  +p(3999 |> to-kansujix |> show-option |> embed-string);
+  +p(1234567890 |> to-kansujix |> opiton-panic |> from-kansujix |> opiton-panic |> arabic |> embed-string);
+  +p(9 |> to-kansujix |> opiton-panic |> from-kansujix |> opiton-panic |> arabic |> embed-string);
+  +p(123 |> to-kansujix |> opiton-panic |> from-kansujix |> opiton-panic |> arabic |> embed-string);
+  +p(1235 |> to-kansujix |> opiton-panic |> from-kansujix |> opiton-panic |> arabic |> embed-string);
+  +p(3999 |> to-kansujix |> opiton-panic |> from-kansujix |> opiton-panic |> arabic |> embed-string);
+
+  +p(500000 |> to-roman-upper |> show-option |> embed-string);
+>
