@@ -1,3 +1,6 @@
+![](https://github.com/puripuri2100/SATySFi-num-conversion/workflows/build/badge.svg)
+
+
 # SATySFi-num-conversion
 
 SATySFi-num-conversion is SATySFi packages that convert numbers to the following notation.

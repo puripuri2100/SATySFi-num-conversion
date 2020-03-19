@@ -1,3 +1,3 @@
 .PHONY: test
 test:
-	satysfi test.saty
+	satysfi test/test.saty -o test/test.pdf
