@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [latest]
+        version: [nightly]
     container:
       image: amutake/satysfi:${{ matrix.version }}
     steps:
