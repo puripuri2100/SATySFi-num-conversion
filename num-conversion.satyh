@@ -288,7 +288,7 @@ let make-to-roman f n =
 
 
 let to-roman-upper n =
-  if n < 0 || 4999 < n then
+  if n <= 0 || 4999 < n then
     None
   else
     let f n = n |> int-to-roman |> roman-to-string-upper in
@@ -296,7 +296,7 @@ let to-roman-upper n =
 
 
 let to-roman-lower n =
-  if n < 0 || 4999 < n then
+  if n <= 0 || 4999 < n then
     None
   else
     let f n = n |> int-to-roman |> roman-to-string-lower in

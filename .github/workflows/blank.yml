@@ -4,7 +4,7 @@ on: [push,pull_request]
 
 
 jobs:
-  build-simple-example:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,6 +18,8 @@ jobs:
           eval $(opam env)
           opam update
           opam install satysfi-base
-          satyrographos install -library base
+          opam install satysfi-assert-eq
+          opam install satysfi-debug-show-value
+          satyrographos install
           satysfi test.saty
         working-directory: ./test
