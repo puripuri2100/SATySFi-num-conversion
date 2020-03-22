@@ -1,5 +1,6 @@
 ![](https://github.com/puripuri2100/SATySFi-num-conversion/workflows/build/badge.svg)
 
+num-conversion version 0.1.1
 
 # SATySFi-num-conversion
 
