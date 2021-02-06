@@ -1,0 +1,46 @@
+@require: stdjabook
+@require: code
+@require: itemize
+
+document (|
+  title = {num-conversion};
+  author = {Naoki Kaneko (a.k.a. "puripuri2100")};
+  show-title = true;
+  show-toc = false;
+|) '<
++p{num-conversion version 0.1.2}
+
++section {使い方} <
+
+  +p{数字を以下の表記に変換したり、その評価から逆に数字に変換する関数を提供します。}
+  +listing {
+    * ローマ数字（大文字と小文字）
+    * 全角数字
+    * 漢数字（非位取り記法）
+  }
+>
+
++section {提供モジュール} <
+  +p{`NumConversion`}
+>
+
++section {提供関数} <
+  +listing {
+    * \code(`val to-zenkaku : int -> string option`);
+    * \code(`val from-zenkaku : string -> int option`);
+    * \code(`val to-roman-upper : int -> string option`);
+    * \code(`val from-roman-upper : string -> int option`);
+    * \code(`val to-roman-lower : int -> string option`);
+    * \code(`val from-roman-lower : string -> int option`);
+    * \code(`val to-kansujix : int -> string option`);
+    * \code(`val from-kansujix : string -> int option`);
+  }
+>
+
++section {注意事項} <
+
+  +p{全ての関数において、負の数は扱えません。また、ローマ数字に関しては5000未満という制限があります。}
+  +p{変換ができない文字列や、制限を超える数字が与えられ場合は`None`が返ります。}
+>
+
+>

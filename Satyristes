@@ -3,7 +3,7 @@
 
 (library
   (name "num-conversion")
-  (version "0.1.1")
+  (version "0.1.2")
   (sources
     (
      (package "num-conversion.satyh" "./num-conversion.satyh")
@@ -12,5 +12,28 @@
   (opam "satysfi-num-conversion.opam")
   (dependencies (
     (base ())
-  ))
-  (compatibility ((satyrographos "0.0.1"))))
+    (dist ())
+  )))
+
+;; Library doc declaration
+(libraryDoc
+  ;; Library doc name
+  (name "num-conversion-doc")
+  ;; Library version
+  (version "0.1.2")
+  ;; Working directory to build docs
+  (workingDirectory "doc")
+  ;; Build commands
+  (build
+    ;; Run SATySFi
+    ((satysfi "doc-ja.saty" "-o" "doc-ja.pdf")))
+  ;; Files
+  (sources
+    ((doc "doc-ja.pdf" "doc/doc-ja.pdf")))
+  ;; OPAM package file
+  (opam "satysfi-num-conversion-doc.opam")
+  ;; Dependency
+  (dependencies
+    ((num-conversion ()) ; the main library
+     (dist ())
+    )))

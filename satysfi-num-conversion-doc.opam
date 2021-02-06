@@ -1,8 +1,8 @@
 opam-version: "2.0"
-name: "satysfi-num-conversion"
+name: "satysfi-num-conversion-doc"
 version: "0.1.2"
-synopsis: "Convert numbers to the following notation"
-description: """Convert numbers to the following notation."""
+synopsis: "Document: Convert numbers to the following notation"
+description: """Document: Convert numbers to the following notation."""
 
 maintainer: "Naoki Kaneko <puripuri2100@gmail.com>"
 authors: "Naoki Kaneko <puripuri2100@gmail.com>"
@@ -14,13 +14,18 @@ dev-repo: "git+https://github.com/puripuri2100/SATySFi-num-conversion.git"
 depends: [
   "satysfi" {>= "0.0.5" & < "0.0.7"}
   "satyrographos" {>= "0.0.2.6" & < "0.0.3"}
-  "satysfi-base" {>= "1.0.0"}
   "satysfi-dist"
+  "satysfi-num-conversion" {= "%{version}%"}
 ]
-build: [ ]
+build: [
+  ["satyrographos" "opam" "build"
+   "--name" "num-conversion-doc"
+   "--prefix" "%{prefix}%"
+   "--script" "%{build}%/Satyristes"]
+]
 install: [
   ["satyrographos" "opam" "install"
-   "--name" "num-conversion"
+   "--name" "num-conversion-doc"
    "--prefix" "%{prefix}%"
    "--script" "%{build}%/Satyristes"]
 ]
