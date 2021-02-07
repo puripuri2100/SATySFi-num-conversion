@@ -1,6 +1,25 @@
 @require: stdjabook
 @require: code
 @require: itemize
+@require: num-conversion/num-conversion
+@require: assert-eq/assert-eq
+@require: debug-show-value/debug-show-value
+
+
+open NumConversion
+open DebugShowValue
+
+let-inline \show-str code =
+  code
+  |> show-opt show-string
+  |> embed-string
+
+let-inline \show-int code =
+  code
+  |> show-opt show-int
+  |> embed-string
+
+in
 
 document (|
   title = {num-conversion};
@@ -8,7 +27,7 @@ document (|
   show-title = true;
   show-toc = false;
 |) '<
-+p{num-conversion version 0.1.2}
++p{num-conversion version 0.1.3}
 
 +section {使い方} <
 
@@ -37,10 +56,117 @@ document (|
   }
 >
 
++section {demo} <
+  +p{全角系のdemo}
+  +listing{
+    * \code(`to-zenkaku 1230`);: \show-str(to-zenkaku 1230);
+    * \code(``from-zenkaku `１２３０` ``);: \show-int(from-zenkaku `１２３０`);
+    * \code(`to-zenkaku -1`);: \show-str(to-zenkaku (-1));
+  }
+
+  +p{ローマ数字系のdemo}
+  +listing{
+    * \code(`to-roman-upper 14`);: \show-str(to-roman-upper 14);
+    * \code(``from-roman-lower `mmmmcmxcix` ``);: \show-int(from-roman-lower `mmmmcmxcix`);
+  }
+
+  +p{漢数字系のdemo}
+  +listing{
+    * \code(`to-kansujix 100`);: \show-str(to-kansujix 100);
+    * \code(``from-kansujix `一〇〇` ``);: \show-int(from-kansujix `一〇〇`);
+  }
+>
+
+
 +section {注意事項} <
 
   +p{全ての関数において、負の数は扱えません。また、ローマ数字に関しては5000未満という制限があります。}
   +p{変換ができない文字列や、制限を超える数字が与えられ場合は`None`が返ります。}
+>
+
++section{test} <
+  +p{assert-eqを用いてテストを行っています。コードを覗くことのできる人はぜひ見てみてください。}
+  +assert-eq(show-opt show-string)(to-zenkaku 1230)(Some(`１２３０`));
+  +assert-eq(show-opt show-int)(from-zenkaku `１２３０`)(Some(1230));
+  +assert-eq(show-opt show-string)(to-zenkaku (-100))(None);
+  +assert-eq(show-opt show-int)(from-zenkaku `１２３0`)(None);
+
+
+  +assert-eq(show-opt show-string)(to-roman-upper 0)   (None);
+  +assert-eq(show-opt show-string)(to-roman-upper 1)   (Some(`I`));
+  +assert-eq(show-opt show-string)(to-roman-upper 2)   (Some(`II`));
+  +assert-eq(show-opt show-string)(to-roman-upper 3)   (Some(`III`));
+  +assert-eq(show-opt show-string)(to-roman-upper 4)   (Some(`IV`));
+  +assert-eq(show-opt show-string)(to-roman-upper 5)   (Some(`V`));
+  +assert-eq(show-opt show-string)(to-roman-upper 6)   (Some(`VI`));
+  +assert-eq(show-opt show-string)(to-roman-upper 7)   (Some(`VII`));
+  +assert-eq(show-opt show-string)(to-roman-upper 8)   (Some(`VIII`));
+  +assert-eq(show-opt show-string)(to-roman-upper 9)   (Some(`IX`));
+  +assert-eq(show-opt show-string)(to-roman-upper 10)  (Some(`X`));
+  +assert-eq(show-opt show-string)(to-roman-upper 11)  (Some(`XI`));
+  +assert-eq(show-opt show-string)(to-roman-upper 14)  (Some(`XIV`));
+  +assert-eq(show-opt show-string)(to-roman-upper 100) (Some(`C`));
+  +assert-eq(show-opt show-string)(to-roman-upper 4999)(Some(`MMMMCMXCIX`));
+  +assert-eq(show-opt show-string)(to-roman-upper 5000)(None);
+
+  +assert-eq(show-opt show-string)(to-roman-lower 0)   (None);
+  +assert-eq(show-opt show-string)(to-roman-lower 1)   (Some(`i`));
+  +assert-eq(show-opt show-string)(to-roman-lower 2)   (Some(`ii`));
+  +assert-eq(show-opt show-string)(to-roman-lower 3)   (Some(`iii`));
+  +assert-eq(show-opt show-string)(to-roman-lower 4)   (Some(`iv`));
+  +assert-eq(show-opt show-string)(to-roman-lower 5)   (Some(`v`));
+  +assert-eq(show-opt show-string)(to-roman-lower 6)   (Some(`vi`));
+  +assert-eq(show-opt show-string)(to-roman-lower 7)   (Some(`vii`));
+  +assert-eq(show-opt show-string)(to-roman-lower 8)   (Some(`viii`));
+  +assert-eq(show-opt show-string)(to-roman-lower 9)   (Some(`ix`));
+  +assert-eq(show-opt show-string)(to-roman-lower 10)  (Some(`x`));
+  +assert-eq(show-opt show-string)(to-roman-lower 11)  (Some(`xi`));
+  +assert-eq(show-opt show-string)(to-roman-lower 14)  (Some(`xiv`));
+  +assert-eq(show-opt show-string)(to-roman-lower 100) (Some(`c`));
+  +assert-eq(show-opt show-string)(to-roman-lower 4999)(Some(`mmmmcmxcix`));
+  +assert-eq(show-opt show-string)(to-roman-lower 5000)(None);
+
+
+  +assert-eq(show-opt show-int)(from-roman-upper `I`)        (Some(1));
+  +assert-eq(show-opt show-int)(from-roman-upper `II`)       (Some(2));
+  +assert-eq(show-opt show-int)(from-roman-upper `III`)      (Some(3));
+  +assert-eq(show-opt show-int)(from-roman-upper `IV`)       (Some(4));
+  +assert-eq(show-opt show-int)(from-roman-upper `IIII`)     (Some(4));
+  +assert-eq(show-opt show-int)(from-roman-upper `V`)        (Some(5));
+  +assert-eq(show-opt show-int)(from-roman-upper `VI`)       (Some(6));
+  +assert-eq(show-opt show-int)(from-roman-upper `VII`)      (Some(7));
+  +assert-eq(show-opt show-int)(from-roman-upper `VIII`)     (Some(8));
+  +assert-eq(show-opt show-int)(from-roman-upper `IX`)       (Some(9));
+  +assert-eq(show-opt show-int)(from-roman-upper `VIIII`)    (Some(9));
+  +assert-eq(show-opt show-int)(from-roman-upper `X`)        (Some(10));
+  +assert-eq(show-opt show-int)(from-roman-upper `XI`)       (Some(11));
+  +assert-eq(show-opt show-int)(from-roman-upper `XIV`)      (Some(14));
+  +assert-eq(show-opt show-int)(from-roman-upper `C`)        (Some(100));
+  +assert-eq(show-opt show-int)(from-roman-upper `MMMMCMXCIX`)(Some(4999));
+
+  +assert-eq(show-opt show-int)(from-roman-lower `i`)        (Some(1));
+  +assert-eq(show-opt show-int)(from-roman-lower `ii`)       (Some(2));
+  +assert-eq(show-opt show-int)(from-roman-lower `iii`)      (Some(3));
+  +assert-eq(show-opt show-int)(from-roman-lower `iv`)       (Some(4));
+  +assert-eq(show-opt show-int)(from-roman-lower `iiii`)     (Some(4));
+  +assert-eq(show-opt show-int)(from-roman-lower `v`)        (Some(5));
+  +assert-eq(show-opt show-int)(from-roman-lower `vi`)       (Some(6));
+  +assert-eq(show-opt show-int)(from-roman-lower `vii`)      (Some(7));
+  +assert-eq(show-opt show-int)(from-roman-lower `viii`)     (Some(8));
+  +assert-eq(show-opt show-int)(from-roman-lower `ix`)       (Some(9));
+  +assert-eq(show-opt show-int)(from-roman-lower `viiii`)    (Some(9));
+  +assert-eq(show-opt show-int)(from-roman-lower `x`)        (Some(10));
+  +assert-eq(show-opt show-int)(from-roman-lower `xi`)       (Some(11));
+  +assert-eq(show-opt show-int)(from-roman-lower `xiv`)      (Some(14));
+  +assert-eq(show-opt show-int)(from-roman-lower `c`)        (Some(100));
+  +assert-eq(show-opt show-int)(from-roman-lower `mmmmcmxcix`)(Some(4999));
+
+
+  +assert-eq(show-opt show-string)(to-kansujix 100)(Some(`一〇〇`));
+  +assert-eq(show-opt show-int)(from-kansujix `一〇〇`)(Some(100));
+  +assert-eq(show-opt show-string)(to-kansujix (-100))(None);
+  +assert-eq(show-opt show-int)(from-kansujix `1〇〇`)(None);
+  +assert-eq(show-opt show-int)(from-kansujix `百`)(None);
 >
 
 >

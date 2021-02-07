@@ -1,4 +1,4 @@
-num-conversion version 0.1.2
+num-conversion version 0.1.3
 
 # 使い方
 
