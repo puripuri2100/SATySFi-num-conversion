@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "satysfi-num-conversion-doc"
-version: "0.1.3"
+version: "0.1.4"
 synopsis: "Document: Convert numbers to the following notation"
 description: """Document: Convert numbers to the following notation."""
 
@@ -16,6 +16,8 @@ depends: [
   "satyrographos" {>= "0.0.2.6" & < "0.0.3"}
   "satysfi-dist"
   "satysfi-num-conversion" {= "%{version}%"}
+  "satysfi-assert-eq"
+  "satysfi-debug-show-value"
 ]
 build: [
   ["satyrographos" "opam" "build"
